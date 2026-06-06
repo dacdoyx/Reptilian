@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REPTILIAN</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a0a;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    overflow-x: hidden;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 99;
+  }
+
+  /* ── WRAPPER ── */
+  .wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  /* ── TEXT BLOCK — horizontal, full width ── */
+  .text-stage {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1;
+  }
+
+  .word {
+    font-family: 'Bebas Neue', sans-serif;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: clamp(4px, 1.5vw, 20px);
+    line-height: 0.88;
+    display: block;
+    width: 100%;
+    text-align: center;
+    /* fluid font: large enough to be wide, character won't fully cover */
+    font-size: clamp(80px, 18vw, 200px);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    will-change: background-image;
+  }
+
+  .word-rep {
+    background-image: linear-gradient(160deg, #ff6b35 0%, #D42020 35%, #8B0000 70%, #3d0000 100%);
+    filter: drop-shadow(0 0 40px rgba(212,32,32,0.45));
+  }
+  .word-til {
+    background-image: linear-gradient(160deg, #6b7c3a 0%, #4A5C2A 35%, #2a3318 70%, #111 100%);
+    filter: drop-shadow(0 0 30px rgba(74,92,42,0.35));
+  }
+  .word-ian {
+    background-image: linear-gradient(160deg, #e8e8e8 0%, #C0C0C0 30%, #888 60%, #333 100%);
+    filter: drop-shadow(0 0 24px rgba(192,192,192,0.25));
+  }
+
+  /* ── CHARACTER — overlaid centered ── */
+  .character-wrap {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    pointer-events: none;
+    width: clamp(220px, 40vw, 460px);
+  }
+
+  .character-wrap img {
+    width: 100%;
+    height: auto;
+    display: block;
+    mix-blend-mode: multiply;
+  }
+
+  /* ── GLASS CARD ── */
+  .glass-card {
+    position: relative;
+    z-index: 4;
+    width: 100%;
+    max-width: 580px;
+    margin-top: clamp(20px, 4vw, 48px);
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.10);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    border-radius: 4px;
+    padding: clamp(24px, 4vw, 44px) clamp(24px, 5vw, 52px);
+    overflow: hidden;
+  }
+
+  /* top accent line */
+  .glass-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #D42020, #4A5C2A, #C0C0C0);
+  }
+
+  /* inner glow */
+  .glass-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg,
+      rgba(212,32,32,0.05) 0%,
+      transparent 40%,
+      rgba(74,92,42,0.05) 100%);
+    pointer-events: none;
+  }
+
+  .card-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(9px, 1.2vw, 11px);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: #D42020;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-tag::before {
+    content: '';
+    display: block;
+    width: 24px; height: 1px;
+    background: #D42020;
+    flex-shrink: 0;
+  }
+
+  .card-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(32px, 5vw, 52px);
+    letter-spacing: 3px;
+    line-height: 1;
+    background: linear-gradient(135deg, #ff6b35, #D42020 40%, #8B0000);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+  }
+
+  .card-divider {
+    width: 40px; height: 1px;
+    background: rgba(255,255,255,0.12);
+    margin-bottom: 16px;
+  }
+
+  .card-desc {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(11px, 1.4vw, 13px);
+    line-height: 1.85;
+    color: rgba(242,240,235,0.5);
+    margin-bottom: 24px;
+  }
+
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .pill {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 40px;
+    border: 1px solid rgba(255,255,255,0.10);
+    color: rgba(242,240,235,0.4);
+    background: rgba(255,255,255,0.03);
+  }
+  .pill.red   { border-color: rgba(212,32,32,0.4); color: #D42020; background: rgba(212,32,32,0.07); }
+  .pill.green { border-color: rgba(74,92,42,0.5);  color: #7ea345; background: rgba(74,92,42,0.08); }
+  .pill.silver{ border-color: rgba(192,192,192,0.3); color: #aaa; background: rgba(192,192,192,0.05); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .glass-card { max-width: 100%; }
+    .character-wrap { width: clamp(180px, 55vw, 300px); }
+  }
+
+  @media (min-width: 1200px) {
+    .word { font-size: 220px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrapper">
+
+  <!-- TEXT + CHARACTER STAGE -->
+  <div class="text-stage">
+    <span class="word word-rep" id="wRep">REP</span>
+    <span class="word word-til" id="wTil">TIL</span>
+    <span class="word word-ian" id="wIan">IAN</span>
+
+    <!-- character floats on top of text -->
+    <div class="character-wrap">
+      <img src="reptilian.png" alt="Reptilian Character">
+    </div>
+  </div>
+
+  <!-- GLASS CARD -->
+  <div class="glass-card">
+    <div class="card-tag">Character Profile</div>
+    <div class="card-name">REPTILIAN</div>
+    <div class="card-divider"></div>
+    <div class="card-desc">
+      Street-hardened and scales of steel — Reptilian is the apex predator of the urban jungle. 
+      Draped in red-black tactical gear, carrying heat and attitude in equal measure. 
+      Half dinosaur. All drip. Zero mercy.
+    </div>
+    <div class="card-tags">
+      <span class="pill red">Apex Predator</span>
+      <span class="pill green">Urban Reptile</span>
+      <span class="pill silver">Full Drip</span>
+      <span class="pill">Tactical</span>
+      <span class="pill">OG Status</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let t = 0;
+  const rep = document.getElementById('wRep');
+  const til = document.getElementById('wTil');
+  const ian = document.getElementById('wIan');
+
+  function tick() {
+    t += 0.003;
+    const a = (Math.sin(t) * 20 + 160).toFixed(1);
+    const p = (Math.sin(t * 0.6) * 12 + 48).toFixed(1);
+
+    rep.style.backgroundImage = `linear-gradient(${a}deg,#ff6b35 0%,#D42020 ${p}%,#8B0000 78%,#3d0000 100%)`;
+    til.style.backgroundImage = `linear-gradient(${a}deg,#6b7c3a 0%,#4A5C2A ${p}%,#2a3318 75%,#111 100%)`;
+    ian.style.backgroundImage = `linear-gradient(${a}deg,#e8e8e8 0%,#C0C0C0 ${p}%,#777 62%,#222 100%)`;
+
+    requestAnimationFrame(tick);
+  }
+  tick();
+</script>
+</body>
+</html>
